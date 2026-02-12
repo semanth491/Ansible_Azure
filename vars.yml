@@ -1,0 +1,9 @@
+---
+resource_group: ansible-rg
+location: centralindia
+vnet_name: ansible-vnet
+subnet_name: ansible-subnet
+nsg_name: ansible-nsg
+nic_name: ansible-nic
+vm_name: ansible-vm
+vm_size: Standard_D2s_v3

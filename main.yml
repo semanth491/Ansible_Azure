@@ -1,0 +1,13 @@
+---
+- name: Deploy Full Infrastructure in Central India
+  import_playbook: create_rg.yml
+- name: Build Networking
+  import_playbook: create_vnet.yml
+- name: Build Security
+  import_playbook: create_nsg.yml
+- name: Link Security to Subnet
+  import_playbook: attach_nsg_subnet.yml
+- name: Create Interface
+  import_playbook: create_nic.yml
+- name: Provision VM
+  import_playbook: create_vm.yml
