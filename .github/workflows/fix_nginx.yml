@@ -26,4 +26,4 @@ jobs:
           ANSIBLE_HOST_KEY_CHECKING: "False"
         run: |
           # Ensure your inventory.ini has the correct IP
-          ansible-playbook -i inventory.ini self_heal.yml
+          ansible-playbook -i $GITHUB_WORKSPACE/inventory.ini $GITHUB_WORKSPACE/self_heal.yml
