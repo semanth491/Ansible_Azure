@@ -1,0 +1,29 @@
+name: Auto-Heal Nginx
+on:
+  repository_dispatch:
+    types: [fix_nginx]  # This must match the event_type in Logic App
+
+jobs:
+  run-playbook:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup SSH Key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.VM_SSH_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+
+      - name: Install Ansible
+        run: |
+          sudo apt update
+          sudo apt install -y ansible
+
+      - name: Run Self-Heal Playbook
+        env:
+          ANSIBLE_HOST_KEY_CHECKING: "False"
+        run: |
+          # Ensure your inventory.ini has the correct IP
+          ansible-playbook -i $GITHUB_WORKSPACE/inventory.ini $GITHUB_WORKSPACE/self_heal.yml
