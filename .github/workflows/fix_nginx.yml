@@ -1,10 +1,10 @@
-name: Azure Auto-Heal Nginx
+name: Auto-Heal Nginx
 on:
   repository_dispatch:
-    types: [nginx_down_alert]
+    types: [fix_nginx]  # This must match the event_type in Logic App
 
 jobs:
-  remediate:
+  run-playbook:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
@@ -18,12 +18,12 @@ jobs:
 
       - name: Install Ansible
         run: |
-          sudo apt-get update
-          sudo apt-get install -y ansible
+          sudo apt update
+          sudo apt install -y ansible
 
       - name: Run Self-Heal Playbook
         env:
           ANSIBLE_HOST_KEY_CHECKING: "False"
         run: |
-          # We pass the IP dynamically so it's not hardcoded in the repo
+          # Ensure your inventory.ini has the correct IP
           ansible-playbook -i inventory.ini self_heal.yml
