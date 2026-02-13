@@ -1,0 +1,29 @@
+name: Azure Auto-Heal Nginx
+on:
+  repository_dispatch:
+    types: [nginx_down_alert]
+
+jobs:
+  remediate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup SSH Key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.VM_SSH_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+
+      - name: Install Ansible
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ansible
+
+      - name: Run Self-Heal Playbook
+        env:
+          ANSIBLE_HOST_KEY_CHECKING: "False"
+        run: |
+          # We pass the IP dynamically so it's not hardcoded in the repo
+          ansible-playbook -i inventory.ini self_heal.yml
